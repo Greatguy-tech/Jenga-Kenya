@@ -161,11 +161,11 @@
     const next = schedule.find((item) => item.status !== "paid");
     const progress = Math.min(100, Math.round(loanPaid(loan) / loanTotal(loan) * 100));
     return `<tr>
-      <td><div class="client-cell"><span class="client-avatar">${escapeHtml(initials(client?.name || "Client"))}</span><div><strong>${escapeHtml(client?.name || "Unknown client")}</strong><span>${escapeHtml(loan.id)}</span></div></div></td>
-      <td>${money(loan.principal)}</td><td>${money(loanTotal(loan))}</td>
-      ${withProgress ? `<td><div class="progress-cell"><div class="mini-progress"><i style="width:${progress}%"></i></div><span>${progress}%</span></div></td>` : ""}
-      <td>${next ? formatDate(next.dueDate) : "—"}</td><td>${statusPill(loanStatus(loan))}</td>
-      <td><button class="row-action" data-action="loan" data-id="${escapeHtml(loan.id)}">Details</button></td>
+      <td data-label="Client"><div class="client-cell"><span class="client-avatar">${escapeHtml(initials(client?.name || "Client"))}</span><div><strong>${escapeHtml(client?.name || "Unknown client")}</strong><span>${escapeHtml(loan.id)}</span></div></div></td>
+      <td data-label="Loan amount">${money(loan.principal)}</td><td data-label="Repayment">${money(loanTotal(loan))}</td>
+      ${withProgress ? `<td data-label="Progress"><div class="progress-cell"><div class="mini-progress"><i style="width:${progress}%"></i></div><span>${progress}%</span></div></td>` : ""}
+      <td data-label="Next due">${next ? formatDate(next.dueDate) : "—"}</td><td data-label="Status">${statusPill(loanStatus(loan))}</td>
+      <td data-label="Actions"><button class="row-action" data-action="loan" data-id="${escapeHtml(loan.id)}">Details</button></td>
     </tr>`;
   }
 
@@ -214,7 +214,7 @@
     byId("clients-table").innerHTML = clients.map((client) => {
       const loans = data.loans.filter((loan) => loan.clientId === client.id);
       const outstanding = sum(loans, (loan) => Math.max(0, loanTotal(loan) - loanPaid(loan)));
-      return `<tr><td><div class="client-cell"><span class="client-avatar">${escapeHtml(initials(client.name))}</span><div><strong>${escapeHtml(client.name)}</strong><span>${loans.length} loan${loans.length === 1 ? "" : "s"}</span></div></div></td><td>${escapeHtml(client.phone)}</td><td>${loans.filter((loan) => loanStatus(loan) !== "completed").length}</td><td>${money(sum(loans, (loan) => loan.principal))}</td><td>${money(outstanding)}</td><td><button class="row-action" data-action="client" data-id="${escapeHtml(client.id)}">View</button></td></tr>`;
+      return `<tr><td data-label="Client"><div class="client-cell"><span class="client-avatar">${escapeHtml(initials(client.name))}</span><div><strong>${escapeHtml(client.name)}</strong><span>${loans.length} loan${loans.length === 1 ? "" : "s"}</span></div></div></td><td data-label="Phone">${escapeHtml(client.phone)}</td><td data-label="Active loans">${loans.filter((loan) => loanStatus(loan) !== "completed").length}</td><td data-label="Total borrowed">${money(sum(loans, (loan) => loan.principal))}</td><td data-label="Outstanding">${money(outstanding)}</td><td data-label="Actions"><button class="row-action" data-action="client" data-id="${escapeHtml(client.id)}">View</button></td></tr>`;
     }).join("");
     byId("clients-empty").classList.toggle("hidden", clients.length > 0);
   }
@@ -226,7 +226,7 @@
       const name = clientById(item.loan.clientId)?.name || "";
       return name.toLowerCase().includes(query) && (filter === "all" || item.status === filter);
     }).sort((a, b) => a.dueDate.localeCompare(b.dueDate));
-    byId("payments-table").innerHTML = items.map((item) => `<tr><td><div class="client-cell"><span class="client-avatar">${escapeHtml(initials(clientById(item.loan.clientId)?.name || "Client"))}</span><div><strong>${escapeHtml(clientById(item.loan.clientId)?.name || "Unknown client")}</strong><span>${escapeHtml(clientById(item.loan.clientId)?.phone || "")}</span></div></div></td><td>${item.installment} of ${item.loan.installments}</td><td>${formatDate(item.dueDate)}</td><td>${money(item.amount - item.paid)}</td><td>${escapeHtml(item.loan.id)}</td><td>${statusPill(item.status)}</td><td>${item.status !== "paid" ? `<button class="row-action" data-action="record-payment" data-loan="${escapeHtml(item.loan.id)}" data-installment="${item.installment}" data-amount="${item.amount - item.paid}">Record payment</button>` : "—"}</td></tr>`).join("");
+    byId("payments-table").innerHTML = items.map((item) => `<tr><td data-label="Client"><div class="client-cell"><span class="client-avatar">${escapeHtml(initials(clientById(item.loan.clientId)?.name || "Client"))}</span><div><strong>${escapeHtml(clientById(item.loan.clientId)?.name || "Unknown client")}</strong><span>${escapeHtml(clientById(item.loan.clientId)?.phone || "")}</span></div></div></td><td data-label="Instalment">${item.installment} of ${item.loan.installments}</td><td data-label="Due date">${formatDate(item.dueDate)}</td><td data-label="Amount due">${money(item.amount - item.paid)}</td><td data-label="Loan">${escapeHtml(item.loan.id)}</td><td data-label="Status">${statusPill(item.status)}</td><td data-label="Action">${item.status !== "paid" ? `<button class="row-action" data-action="record-payment" data-loan="${escapeHtml(item.loan.id)}" data-installment="${item.installment}" data-amount="${item.amount - item.paid}">Record payment</button>` : "—"}</td></tr>`).join("");
     byId("payments-empty").classList.toggle("hidden", items.length > 0);
     const overdue = schedules.filter((item) => item.status === "overdue");
     const upcoming = schedules.filter((item) => item.status === "upcoming" && item.dueDate <= dateOffset(7));
@@ -282,7 +282,7 @@
     byId("client-progress-bar").style.width = `${percent}%`;
     byId("client-progress-copy").textContent = `${money(paid)} repaid of ${money(sum(loans, loanTotal))}.`;
     byId("client-target").textContent = loans.length ? formatDate(schedules[schedules.length - 1].dueDate) : "No loans yet";
-    byId("client-schedule").innerHTML = schedules.sort((a, b) => a.dueDate.localeCompare(b.dueDate)).map((item) => `<tr><td>Instalment ${item.installment} <span style="color:#a0a8a3">· ${escapeHtml(item.loan.id)}</span></td><td>${formatDate(item.dueDate)}</td><td>${money(item.amount)}</td><td>${money(item.paid)}</td><td>${statusPill(item.status)}</td></tr>`).join("") || `<tr><td colspan="5">No loan schedule yet. Contact Jenga Kenya for details.</td></tr>`;
+    byId("client-schedule").innerHTML = schedules.sort((a, b) => a.dueDate.localeCompare(b.dueDate)).map((item) => `<tr><td data-label="Instalment">Instalment ${item.installment} <span style="color:#a0a8a3">· ${escapeHtml(item.loan.id)}</span></td><td data-label="Due date">${formatDate(item.dueDate)}</td><td data-label="Amount">${money(item.amount)}</td><td data-label="Paid">${money(item.paid)}</td><td data-label="Status">${statusPill(item.status)}</td></tr>`).join("") || `<tr><td colspan="5">No loan schedule yet. Contact Jenga Kenya for details.</td></tr>`;
   }
 
   function showView(view) {
