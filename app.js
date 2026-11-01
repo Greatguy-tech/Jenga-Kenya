@@ -297,7 +297,13 @@
     document.body.classList.toggle("client-schedule", role === "client" && view === "schedule");
     const title = view === "schedule" ? "Repayment plan" : view === "overview" ? "Overview" : view.charAt(0).toUpperCase() + view.slice(1);
     byId("page-title").textContent = role === "client" ? (view === "schedule" ? "Repayment plan" : "My overview") : title;
+    closeMobileNav();
+  }
+
+  function closeMobileNav() {
     byId("sidebar").classList.remove("open");
+    document.body.classList.remove("nav-open");
+    byId("mobile-menu").setAttribute("aria-expanded", "false");
   }
 
   function openDialog(content) {
@@ -383,7 +389,13 @@
     if (target.dataset.go) { showView(target.dataset.go); return; }
     if (target.id === "primary-action" || target.id === "add-loan-button") { openLoanForm(); return; }
     if (target.id === "add-client-button") { openClientForm(); return; }
-    if (target.id === "mobile-menu") { byId("sidebar").classList.toggle("open"); return; }
+    if (target.id === "mobile-menu") {
+      const isOpen = byId("sidebar").classList.toggle("open");
+      document.body.classList.toggle("nav-open", isOpen);
+      target.setAttribute("aria-expanded", String(isOpen));
+      return;
+    }
+    if (target.id === "drawer-backdrop") { closeMobileNav(); return; }
     if (target.dataset.action === "open-settings") { openSettings(); return; }
     if (target.dataset.action === "switch-lender") {
       byId("role-select").value = "lender";
@@ -411,6 +423,9 @@
 
   byId("app-dialog").addEventListener("click", (event) => {
     if (event.target === byId("app-dialog")) closeDialog();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && byId("sidebar").classList.contains("open")) closeMobileNav();
   });
   byId("app-dialog").addEventListener("submit", (event) => {
     event.preventDefault();
