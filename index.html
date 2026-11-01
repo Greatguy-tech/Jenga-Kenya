@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17623b">
+  <title>Jenga Kenya — Loan Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Jenga Kenya home">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span class="brand-name">jenga<span>kenya</span></span>
+      </a>
+      <div class="workspace-label" id="workspace-label">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-link active lender-only" data-view="overview"><span class="nav-icon">◫</span>Overview</button>
+        <button class="nav-link lender-only" data-view="loans"><span class="nav-icon">▤</span>Loans <span class="nav-count" id="loan-nav-count">0</span></button>
+        <button class="nav-link lender-only" data-view="clients"><span class="nav-icon">♙</span>Clients</button>
+        <button class="nav-link lender-only" data-view="payments"><span class="nav-icon">↗</span>Repayments</button>
+        <button class="nav-link client-only" data-view="overview"><span class="nav-icon">⌂</span>My overview</button>
+        <button class="nav-link client-only" data-view="schedule"><span class="nav-icon">▤</span>Repayment plan</button>
+        <a class="nav-link client-only client-help-link" href="mailto:support@jengakenya.co.ke"><span class="nav-icon">?</span>Get help</a>
+        <button class="nav-link client-only switch-account-link" data-action="switch-lender"><span class="nav-icon">↩</span>Switch to lender account</button>
+        <button class="nav-link settings-link" data-action="open-settings"><span class="nav-icon">⚙</span>Settings</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card">
+          <div class="help-icon">?</div>
+          <strong id="help-title">Need a hand?</strong>
+          <p id="help-copy">Our team is here to help you get started.</p>
+          <a href="mailto:support@jengakenya.co.ke">Contact support <span>↗</span></a>
+        </div>
+        <div class="profile-row">
+          <div class="avatar avatar-dark" id="profile-avatar">LW</div>
+          <div class="profile-info"><strong id="profile-name">Lydiah Wangari</strong><span id="profile-role">Lender account</span></div>
+          <button class="more-button" aria-label="Account options">···</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Open menu">☰</button>
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-separator">/</span><strong id="page-title">Overview</strong></div>
+        <div class="topbar-actions">
+          <label class="role-switcher"><span>Viewing as</span>
+            <select id="role-select" aria-label="Choose account view">
+              <option value="lender">Lender</option>
+              <option value="client">Client</option>
+            </select>
+          </label>
+          <button class="icon-button notification-button" aria-label="Notifications">♧<i></i></button>
+          <div class="avatar avatar-green" id="topbar-avatar">LW</div>
+        </div>
+      </header>
+
+      <div class="page-wrap">
+        <section class="view-panel active" id="overview-view">
+          <div class="welcome-row">
+            <div>
+              <div class="eyebrow"><span class="live-dot"></span>YOUR FINANCIAL OVERVIEW</div>
+              <h1 id="welcome-title">Good morning, Lydiah Wangari <span>✦</span></h1>
+              <p class="page-subtitle" id="welcome-subtitle">Here’s what’s happening with your loan portfolio today.</p>
+            </div>
+            <button class="button button-primary" id="primary-action"><span>＋</span> New loan</button>
+          </div>
+
+          <div class="stats-grid" id="lender-stats">
+            <article class="stat-card">
+              <div class="stat-label">Total disbursed <span class="stat-icon mint">↗</span></div>
+              <div class="stat-value" id="stat-disbursed">KES 0</div>
+              <div class="stat-foot"><span class="foot-dot green-dot"></span><span id="stat-active">0 active loans</span></div>
+            </article>
+            <article class="stat-card">
+              <div class="stat-label">Collected this month <span class="stat-icon lilac">↙</span></div>
+              <div class="stat-value" id="stat-collected">KES 0</div>
+              <div class="stat-foot"><span class="foot-dot green-dot"></span>Repayments received</div>
+            </article>
+            <article class="stat-card">
+              <div class="stat-label">Overdue payments <span class="stat-icon peach">!</span></div>
+              <div class="stat-value" id="stat-overdue">0</div>
+              <div class="stat-foot"><span id="stat-overdue-amount">KES 0 outstanding</span></div>
+            </article>
+            <article class="stat-card">
+              <div class="stat-label">Due in the next 7 days <span class="stat-icon blue">◷</span></div>
+              <div class="stat-value" id="stat-upcoming">0</div>
+              <div class="stat-foot"><span id="stat-upcoming-amount">KES 0 expected</span></div>
+            </article>
+          </div>
+
+          <div class="overview-grid" id="lender-overview">
+            <section class="panel portfolio-panel">
+              <div class="panel-heading">
+                <div><h2>Repayment overview</h2><p>Collections and outstanding balance</p></div>
+                <select class="select-small" id="chart-period" aria-label="Chart period"><option value="6">Last 6 months</option><option value="3">Last 3 months</option></select>
+              </div>
+              <div class="chart-summary"><strong id="chart-collected">KES 0</strong><span>collected this month</span><span class="chart-legend"><i></i> Collected <i class="legend-outstanding"></i> Outstanding</span></div>
+              <div class="chart" id="repayment-chart" role="img" aria-label="Monthly repayment chart"></div>
+            </section>
+            <section class="panel due-panel">
+              <div class="panel-heading">
+                <div><h2>Payment watch</h2><p>Items that need your attention</p></div>
+                <button class="text-button" data-go="payments">View all <span>→</span></button>
+              </div>
+              <div class="watch-list" id="payment-watch"></div>
+            </section>
+          </div>
+
+          <section class="panel table-panel" id="recent-loans-panel">
+            <div class="panel-heading table-heading">
+              <div><h2>Recent loans</h2><p>A quick look at your latest client loans</p></div>
+              <button class="text-button" data-go="loans">All loans <span>→</span></button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>CLIENT</th><th>LOAN AMOUNT</th><th>REPAYMENT</th><th>NEXT DUE</th><th>STATUS</th><th></th></tr></thead>
+                <tbody id="recent-loans"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="client-home hidden" id="client-home">
+            <div class="client-banner">
+              <div class="banner-copy"><span class="banner-eyebrow">YOUR LOAN, MADE CLEAR</span><h2>Stay on top of your repayments.</h2><p>Track what you’ve paid, what’s coming up, and how close you are to being debt-free.</p></div>
+              <div class="banner-art"><div class="art-circle"></div><div class="art-card"><span>LOAN BALANCE</span><strong id="client-balance">KES 0</strong><i>↗</i></div></div>
+            </div>
+            <div class="stats-grid client-stats">
+              <article class="stat-card"><div class="stat-label">Amount borrowed <span class="stat-icon mint">↗</span></div><div class="stat-value" id="client-principal">KES 0</div><div class="stat-foot">Your original loan amount</div></article>
+              <article class="stat-card"><div class="stat-label">Total repaid <span class="stat-icon lilac">✓</span></div><div class="stat-value" id="client-paid">KES 0</div><div class="stat-foot">You’re making great progress</div></article>
+              <article class="stat-card"><div class="stat-label">Next payment <span class="stat-icon blue">◷</span></div><div class="stat-value" id="client-next">—</div><div class="stat-foot" id="client-next-date">No payment due</div></article>
+              <article class="stat-card"><div class="stat-label">Payments left <span class="stat-icon peach">▤</span></div><div class="stat-value" id="client-left">0</div><div class="stat-foot">Until your loan is complete</div></article>
+            </div>
+            <section class="panel client-progress-panel">
+              <div class="panel-heading"><div><h2>Your repayment progress</h2><p id="client-progress-copy">Every payment gets you closer.</p></div><strong class="progress-percent" id="client-progress-percent">0%</strong></div>
+              <div class="progress-track"><div id="client-progress-bar"></div></div>
+              <div class="progress-labels"><span>Loan started</span><span id="client-target">Loan complete</span></div>
+            </section>
+            <div class="client-schedule-intro"><div class="eyebrow">YOUR LOAN</div><h1>Repayment plan</h1><p class="page-subtitle">See your instalments, due dates and payment progress.</p></div>
+            <section class="panel table-panel" id="client-schedule-panel">
+              <div class="panel-heading table-heading"><div><h2>Your repayment plan</h2><p>All your scheduled instalments in one place</p></div></div>
+              <div class="table-wrap"><table><thead><tr><th>INSTALMENT</th><th>DUE DATE</th><th>AMOUNT</th><th>PAID</th><th>STATUS</th></tr></thead><tbody id="client-schedule"></tbody></table></div>
+            </section>
+          </section>
+        </section>
+
+        <section class="view-panel" id="loans-view">
+          <div class="page-heading-row"><div><div class="eyebrow">PORTFOLIO</div><h1>Loans</h1><p class="page-subtitle">Manage and monitor every client loan.</p></div><button class="button button-primary" id="add-loan-button">＋ New loan</button></div>
+          <section class="panel table-panel">
+            <div class="filter-row"><label class="search-box"><span>⌕</span><input id="loan-search" type="search" placeholder="Search clients or loan IDs"></label><select class="select-small" id="loan-filter"><option value="all">All statuses</option><option value="active">Active</option><option value="overdue">Overdue</option><option value="completed">Completed</option></select></div>
+            <div class="table-wrap"><table><thead><tr><th>CLIENT</th><th>LOAN AMOUNT</th><th>REPAYMENT</th><th>PROGRESS</th><th>NEXT DUE</th><th>STATUS</th><th></th></tr></thead><tbody id="loans-table"></tbody></table></div>
+            <div class="empty-state hidden" id="loans-empty">No loans match your search.</div>
+          </section>
+        </section>
+
+        <section class="view-panel" id="clients-view">
+          <div class="page-heading-row"><div><div class="eyebrow">PEOPLE FIRST</div><h1>Clients</h1><p class="page-subtitle">Your client directory and their loan activity.</p></div><button class="button button-primary" id="add-client-button">＋ Add client</button></div>
+          <section class="panel table-panel"><div class="filter-row"><label class="search-box"><span>⌕</span><input id="client-search" type="search" placeholder="Search by name or phone"></label><span class="result-count" id="client-count"></span></div><div class="table-wrap"><table><thead><tr><th>CLIENT</th><th>PHONE</th><th>ACTIVE LOANS</th><th>TOTAL BORROWED</th><th>OUTSTANDING</th><th></th></tr></thead><tbody id="clients-table"></tbody></table></div><div class="empty-state hidden" id="clients-empty">No clients found. Add your first client to get started.</div></section>
+        </section>
+
+        <section class="view-panel" id="payments-view">
+          <div class="page-heading-row"><div><div class="eyebrow">CASH FLOW</div><h1>Repayments</h1><p class="page-subtitle">Keep track of upcoming, overdue and completed instalments.</p></div></div>
+          <div class="payment-summary" id="payment-summary"></div>
+          <section class="panel table-panel"><div class="filter-row"><label class="search-box"><span>⌕</span><input id="payment-search" type="search" placeholder="Search clients"></label><select class="select-small" id="payment-filter"><option value="all">All payments</option><option value="overdue">Overdue</option><option value="upcoming">Upcoming</option><option value="paid">Paid</option></select></div><div class="table-wrap"><table><thead><tr><th>CLIENT</th><th>INSTALMENT</th><th>DUE DATE</th><th>AMOUNT DUE</th><th>LOAN</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="payments-table"></tbody></table></div><div class="empty-state hidden" id="payments-empty">No payments match this filter.</div></section>
+        </section>
+        <footer class="footer"><span>© <span id="current-year"></span> Jenga Kenya</span><span>Building brighter financial futures <b>♥</b></span></footer>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog class="app-dialog" id="app-dialog"><div class="dialog-content" id="dialog-content"></div></dialog>
+  <script src="app.js"></script>
+</body>
+</html>
